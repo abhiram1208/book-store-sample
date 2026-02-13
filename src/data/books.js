@@ -4,7 +4,7 @@ export const books = [
     title: "The Midnight Library",
     author: "Matt Haig",
     price: 299,
-    cover: "https://edit.org/images/cat/book-covers-big-2019101610.jpg",
+    cover: "https://img.freepik.com/free-photo/pastry-eyeglasses-lying-opened-book-bed_23-2147887671.jpg",
     description: "Between life and death there is a library..."
   },
   {
@@ -76,7 +76,7 @@ export const books = [
     title: "The Power of Now",
     author: "Eckhart Tolle",
     price: 370,
-    cover: "https://images.unsplash.com/photo-1496104679561-38d6a3b4a5a9?w=400",
+    cover: "https://5.imimg.com/data5/IU/SQ/GD/SELLER-43618059/book-cover-page-design-500x500.jpg",
     description: "A guide to spiritual enlightenment"
   },
   {
@@ -97,18 +97,18 @@ export const books = [
   },
   {
     id: 13,
-    title: "The Subtle Art of Not Giving a F*ck",
-    author: "Mark Manson",
+    title: "To Kill a Mockingbird ",
+    author: "Harper Lee",
     price: 359,
     cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400",
-    description: "A counterintuitive approach to living"
+    description: "A powerful story about justice and moral growth in the American South"
   },
   {
     id: 14,
     title: "Sapiens",
     author: "Yuval Noah Harari",
     price: 520,
-    cover: "https://images.unsplash.com/photo-1476958526483-36efcaa80aa4?w=400",
+    cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400",
     description: "A brief history of humankind"
   },
   {
