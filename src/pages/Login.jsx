@@ -6,195 +6,156 @@ import emailjs from "@emailjs/browser";
 
 export default function Login() {
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [otp, setOtp] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [useOtp, setUseOtp] = useState(false);
-  const [error, setError] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [showPassword,setShowPassword] = useState(false);
+
+  const [otp,setOtp] = useState("");
+  const [generatedOtp,setGeneratedOtp] = useState("");
+
+  const [step,setStep] = useState(1);
+  const [error,setError] = useState("");
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // PASSWORD LOGIN
-  const handleSubmit = (e) => {
+  const handleSubmit = (e)=>{
     e.preventDefault();
     setError("");
 
-    if (login(email, password)) {
-      navigate("/");
-    } else {
-      setError("Please enter valid email and password");
+    if(login(email,password)){
+
+      const newOtp = Math.floor(100000 + Math.random()*900000).toString();
+      setGeneratedOtp(newOtp);
+
+      emailjs.send(
+        "service_keeet88",
+        "template_vd7et1s",
+        {
+          email: email,
+          otp: newOtp
+        },
+        "xUkFtKo27CsUYXh-B"
+      )
+      .then(()=>{
+        alert("OTP sent to your email");
+        setStep(2);
+      });
+
+    }else{
+      setError("Invalid email or password");
     }
   };
 
-  // SEND OTP
-  const sendOtp = () => {
+  const verifyOtp = ()=>{
 
-    const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    setGeneratedOtp(newOtp);
+    if(otp === generatedOtp){
 
-    emailjs.send(
-      "service_keeet88",
-      "template_vd7et1s",
-      {
-        email: email,
-        otp: newOtp
-      },
-      "xUkFtKo27CsUYXh-B"
-    )
-    .then(() => {
-      alert("OTP sent to email");
-    })
-    .catch((error) => {
-      console.log(error);
-      alert("Failed to send OTP");
-    });
-  };
-
-  // VERIFY OTP
-  const verifyOtp = () => {
-
-    if (otp === generatedOtp) {
-      login(email, "otp-user"); // dummy password
+      alert("Login successful");
       navigate("/");
-    } else {
+
+    }else{
       setError("Invalid OTP");
     }
 
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+  return(
 
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+<div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
 
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Sign in to Book Haven
-          </h2>
-        </div>
+<div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
 
-        {error && <p className="text-red-600 text-center">{error}</p>}
+<h2 className="text-3xl font-bold text-center">Sign in to Book Haven</h2>
 
-        {/* Toggle Buttons */}
-        <div className="flex justify-center gap-4">
-          <button
-            className={`px-4 py-2 rounded ${!useOtp ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-            onClick={() => setUseOtp(false)}
-          >
-            Password
-          </button>
+{error && <p className="text-red-600 text-center">{error}</p>}
 
-          <button
-            className={`px-4 py-2 rounded ${useOtp ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-            onClick={() => setUseOtp(true)}
-          >
-            OTP
-          </button>
-        </div>
+{/* STEP 1 LOGIN */}
 
-        {/* PASSWORD LOGIN */}
-        {!useOtp && (
+{step===1 &&(
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+<form onSubmit={handleSubmit} className="space-y-6">
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
+<div>
+<label>Email</label>
+<input
+type="email"
+required
+value={email}
+onChange={(e)=>setEmail(e.target.value)}
+className="w-full border px-3 py-2 rounded"
+/>
+</div>
 
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e)=>setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
+<div className="relative">
 
-            <div className="relative">
+<label>Password</label>
 
-              <label className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
+<input
+type={showPassword?"text":"password"}
+required
+value={password}
+onChange={(e)=>setPassword(e.target.value)}
+className="w-full border px-3 py-2 rounded"
+/>
 
-              <input
-                type={showPassword ? "text" : "password"}
-                required
-                value={password}
-                onChange={(e)=>setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md"
-              />
+<span
+className="absolute right-3 top-9 cursor-pointer"
+onClick={()=>setShowPassword(!showPassword)}
+>
+{showPassword ? <FaEyeSlash/> : <FaEye/>}
+</span>
 
-              <span
-                className="absolute right-3 top-9 cursor-pointer text-gray-500"
-                onClick={()=>setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash/> : <FaEye/>}
-              </span>
+</div>
 
-            </div>
+<button
+type="submit"
+className="w-full bg-blue-600 text-white py-2 rounded"
+>
+Sign In
+</button>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-            >
-              Sign In
-            </button>
+</form>
 
-          </form>
+)}
 
-        )}
+{/* STEP 2 OTP */}
 
-        {/* OTP LOGIN */}
-        {useOtp && (
+{step===2 &&(
 
-          <div className="space-y-4">
+<div className="space-y-4">
 
-            <input
-              type="email"
-              placeholder="Enter email"
-              value={email}
-              onChange={(e)=>setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+<p className="text-center">
+Enter OTP sent to your email
+</p>
 
-            <button
-              onClick={sendOtp}
-              className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700"
-            >
-              Send OTP
-            </button>
+<input
+type="text"
+placeholder="Enter OTP"
+value={otp}
+onChange={(e)=>setOtp(e.target.value)}
+className="w-full border px-3 py-2 rounded"
+/>
 
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e)=>setOtp(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+<button
+onClick={verifyOtp}
+className="w-full bg-green-600 text-white py-2 rounded"
+>
+Verify OTP
+</button>
 
-            <button
-              onClick={verifyOtp}
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-            >
-              Verify OTP
-            </button>
+</div>
 
-          </div>
+)}
 
-        )}
+<div className="text-center mt-4">
+<Link to="/" className="text-blue-600 hover:underline">
+← Back to Home
+</Link>
+</div>
 
-        <div className="text-center mt-4">
-          <Link to="/" className="text-blue-600 hover:underline">
-            ← Back to Home
-          </Link>
-        </div>
+</div>
+</div>
 
-      </div>
-
-    </div>
   );
 }
